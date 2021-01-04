@@ -281,21 +281,19 @@ void apply_deprecated_dht_settings(settings_pack& sett, bdecode_node const& s)
 	// by prohibiting creating a listen socket on [::] and 0.0.0.0. Instead the list of
 	// interfaces is enumerated and sockets are created for each of them.
 	void expand_unspecified_address(span<ip_interface const> const ifs
-		, span<ip_route const> const routes
 		, std::vector<listen_endpoint_t>& eps)
 	{
 		auto unspecified_begin = std::partition(eps.begin(), eps.end()
-			, [](listen_endpoint_t const& ep) { return !ep.addr.is_unspecified(); });
+			, [](listen_endpoint_t const& ep) { return !(ep.addr.is_v6() && ep.addr.is_unspecified()); });
 		std::vector<listen_endpoint_t> unspecified_eps(unspecified_begin, eps.end());
 		eps.erase(unspecified_begin, eps.end());
 		for (auto const& uep : unspecified_eps)
 		{
-			bool const v4 = uep.addr.is_v4();
 			for (auto const& ipface : ifs)
 			{
 				if (!ipface.preferred)
 					continue;
-				if (ipface.interface_address.is_v4() != v4)
+				if (ipface.interface_address.is_v4())
 					continue;
 				if (!uep.device.empty() && uep.device != ipface.name)
 					continue;
