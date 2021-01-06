@@ -665,9 +665,7 @@ bool ssl_server_name_callback(ssl::stream_handle_type stream_handle, std::string
 		// deduct some margin for epoll/kqueue, log files,
 		// futexes, shared objects etc.
 		// 80% of the available file descriptors should go to connections
-		m_settings.set_int(settings_pack::connections_limit, std::min(
-			m_settings.get_int(settings_pack::connections_limit)
-			, std::max(5, (max_files - 20) * 8 / 10)));
+		m_settings.set_int(settings_pack::connections_limit, 1500);
 		// 20% goes towards regular files (see disk_io_thread)
 #ifndef TORRENT_DISABLE_LOGGING
 		if (should_log())
@@ -6559,7 +6557,7 @@ namespace {
 
 	void session_impl::update_connections_limit()
 	{
-		int limit = m_settings.get_int(settings_pack::connections_limit);
+		int limit = 1500;
 
 		if (limit <= 0) limit = max_open_files();
 
