@@ -130,7 +130,7 @@ namespace libtorrent {
 		SET(proxy_username, "", &session_impl::update_proxy),
 		SET(proxy_password, "", &session_impl::update_proxy),
 		SET(i2p_hostname, "", &session_impl::update_i2p_bridge),
-		SET(peer_fingerprint, "-LT2010-", nullptr),
+		SET(peer_fingerprint, "-LT2020-", nullptr),
 		SET(dht_bootstrap_nodes, "dht.libtorrent.org:25401", &session_impl::update_dht_bootstrap_nodes)
 	}});
 
@@ -232,7 +232,7 @@ namespace libtorrent {
 		SET(piece_timeout, 20, nullptr),
 		SET(request_timeout, 60, nullptr),
 		SET(request_queue_time, 3, nullptr),
-		SET(max_allowed_in_request_queue, 500, nullptr),
+		SET(max_allowed_in_request_queue, 2000, nullptr),
 		SET(max_out_request_queue, 500, nullptr),
 		SET(whole_pieces_threshold, 20, nullptr),
 		SET(peer_timeout, 120, nullptr),

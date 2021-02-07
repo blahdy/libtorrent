@@ -235,6 +235,7 @@ cancelled
 bitcoin
 Jamfile
 Jamfiles
+Jamroot
 NDEBUG
 Solaris
 BitTorrent
@@ -550,7 +551,7 @@ cpp
 tos
 BP
 qB
-LT2010
+LT2020
 iocontrol
 getname
 getpeername
@@ -570,6 +571,8 @@ CANCELIO
 fd
 socketpair
 fileno
+SSRF
+IDNA
 destructors
 fclose
 fopen
@@ -591,3 +594,9 @@ Qt5
 DownZemAll
 LGPL
 OSS
+ccache
+compileflags
+cflags
+cxxflags
+linkflags
+lto

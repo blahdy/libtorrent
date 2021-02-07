@@ -48,6 +48,14 @@ POSSIBILITY OF SUCH DAMAGE.
 
 using namespace libtorrent::flags; // for flag operators
 
+#ifndef TORRENT_WINDOWS
+// make sure the _FILE_OFFSET_BITS define worked
+// on this platform. It's supposed to make file
+// related functions support 64-bit offsets.
+static_assert(sizeof(ftello(nullptr)) >= 8, "64 bit file operations are required");
+static_assert(sizeof(off_t) >= 8, "64 bit file operations are required");
+#endif
+
 namespace libtorrent {
 namespace aux {
 
@@ -127,7 +135,14 @@ namespace aux {
 				// so we just don't use a partfile for this file
 
 				std::string const fp = fs.file_path(i, m_save_path);
-				if (exists(fp)) use_partfile(i, false);
+				if (exists(fp, ec.ec)) use_partfile(i, false);
+				if (ec.ec)
+				{
+					ec.file(i);
+					ec.operation = operation_t::file_stat;
+					prio = m_file_priority;
+					return;
+				}
 			}
 			ec.ec.clear();
 			m_file_priority[i] = new_prio;
@@ -525,9 +540,9 @@ namespace aux {
 #endif
 
 #ifdef TORRENT_WINDOWS
-		FILE* f = _wfopen(convert_to_native_path_string(fn).c_str(), mode_str);
+		FILE* f = ::_wfopen(convert_to_native_path_string(fn).c_str(), mode_str);
 #else
-		FILE* f = fopen(fn.c_str(), mode_str);
+		FILE* f = std::fopen(fn.c_str(), mode_str);
 #endif
 		if (f == nullptr)
 		{
@@ -556,9 +571,9 @@ namespace aux {
 				// reading and writing, but doesn't create the file. "w+" creates
 				// the file and truncates it
 #ifdef TORRENT_WINDOWS
-				f = _wfopen(convert_to_native_path_string(fn).c_str(), L"wb+");
+				f = ::_wfopen(convert_to_native_path_string(fn).c_str(), L"wb+");
 #else
-				f = fopen(fn.c_str(), "wb+");
+				f = std::fopen(fn.c_str(), "wb+");
 #endif
 				if (f == nullptr)
 				{

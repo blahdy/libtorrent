@@ -3,7 +3,6 @@
 from distutils import log
 import distutils.debug
 import distutils.sysconfig
-import multiprocessing
 import os
 import pathlib
 import sys
@@ -200,8 +199,6 @@ class LibtorrentBuildExt(BuildExtBase):
 
         if self.parallel:
             args.append(f"-j{self.parallel}")
-        else:
-            args.append(f"-j{multiprocessing.cpu_count()}")
         if self.libtorrent_link:
             args.append(f"libtorrent-link={self.libtorrent_link}")
         if self.boost_link:
@@ -257,7 +254,7 @@ class LibtorrentBuildExt(BuildExtBase):
 
 setuptools.setup(
     name="python-libtorrent",
-    version="2.0.1",
+    version="2.0.2",
     author="Arvid Norberg",
     author_email="arvid@libtorrent.org",
     description="Python bindings for libtorrent-rasterbar",
